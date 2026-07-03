@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using TestConsole.Tests.AnalyzerApi;
 using TestConsole.Tests.ClassicAgents;
-using TestConsole.Tests.NewFoundryAgents;
 
 var builder = new ConfigurationBuilder();
 builder.SetBasePath(Directory.GetCurrentDirectory())
