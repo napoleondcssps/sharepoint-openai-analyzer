@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>OPENAI001;CA2252</NoWarn>
+    <UserSecretsId>bc702873-8529-461d-9765-5be279614114</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.21.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.12" />
+    <PackageReference Include="Azure.AI.Projects" Version="2.0.1" />
+    <PackageReference Include="Azure.AI.Extensions.OpenAI" Version="2.1.0-beta.1" />
+    <PackageReference Include="OpenAI" Version="2.14.0" />
+    <PackageReference Include="Microsoft.Graph" Version="6.7.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="4.16.0" />
+    <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="4.16.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Prompts\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
