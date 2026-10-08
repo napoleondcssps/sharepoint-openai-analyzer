@@ -175,6 +175,13 @@ public class FoundryServices : IFoundryServices
                 The image is called {fileName} and is in the following format: {documentMimeType}.
                 Here are the user instructions for analyzing the image: {userInstructions}.
                 Please provide your answer in a JSON format that adheres to the following schema: {expectedJsonSchema}";
+
+        var uploadedImage = await _projectClient.ProjectOpenAIClient.GetProjectFilesClient().UploadFileAsync(
+            documentBytes.ToStream(),
+            filename: fileName,
+            FileUploadPurpose.Assistants
+        );
+
         CreateResponseOptions options = new()
         {
             InputItems =
@@ -182,7 +189,7 @@ public class FoundryServices : IFoundryServices
                 ResponseItem.CreateUserMessageItem(
                 [
                     ResponseContentPart.CreateInputTextPart(prompt),
-                    ResponseContentPart.CreateInputImagePart(documentBytes)
+                    ResponseContentPart.CreateInputImagePart(uploadedImage.Value.Id)
                 ])
             },
         };

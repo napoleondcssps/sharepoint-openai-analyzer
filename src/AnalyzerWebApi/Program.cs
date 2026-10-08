@@ -1,5 +1,11 @@
+using AnalyzerWebApi.Agents;
+using AnalyzerWebApi.Authentication;
 using AnalyzerWebApi.Services;
 using Azure.Identity;
+using Microsoft.Agents.Authentication.Msal;
+using Microsoft.Agents.Builder;
+using Microsoft.Agents.Hosting.AspNetCore;
+using Microsoft.Agents.Storage;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Graph;
 using Microsoft.Identity.Web;
@@ -40,6 +46,14 @@ builder.Services.AddScoped<IFoundryServices, FoundryServices>(sp =>
     return new FoundryServices(endpoint, agentName, logger);
 });
 
+// Bot Teams : validation des appels entrants et identité des réponses.
+builder.Services.AddTeamsBotAuthentication(builder.Configuration);
+builder.Services.AddHttpClient();
+builder.Services.AddDefaultMsalAuth(builder.Configuration);
+builder.AddAgentApplicationOptions();
+builder.AddAgent<TeamsDemoAgent>();
+builder.Services.AddSingleton<IStorage, MemoryStorage>();
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 // builder.Services.AddOpenApi();
@@ -54,8 +68,19 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapPost("/api/messages", async (
+    HttpRequest request,
+    HttpResponse response,
+    IAgentHttpAdapter adapter,
+    IAgent agent,
+    CancellationToken cancellationToken) =>
+{
+    await adapter.ProcessAsync(request, response, agent, cancellationToken);
+}).RequireAuthorization(TeamsBotAuthentication.Policy);
 
 app.Run();
